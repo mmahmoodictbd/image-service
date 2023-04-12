@@ -1,0 +1,8 @@
+app:
+  s3Client:
+    bucketName: test-images
+    endpoint: http://localhost:8000
+    accessKey: accessKey1
+    secretKey: verySecretKey1
+    region: eu-central-1
+  sourceRootUrl: https://www.chumbok.nl/INTERSHOP/static/WFS/dbk-shop-Site/-/dbk-shop/nl_NL/product-images

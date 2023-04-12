@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- // TODO: springProperty cannot read from application.yaml for some reason.-->
+	<springProperty scope="context" name="username" source="app.logdb.username"/>
+
+	<!-- // FIXME: Remove hard-coded cred once springProperty can read from application.yaml -->
+	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+		<connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+			<dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+				<driverClass>com.mysql.cj.jdbc.Driver</driverClass>
+				<jdbcUrl>jdbc:mysql://localhost:3306/logdb</jdbcUrl>
+				<user>root</user>
+				<password>root</password>
+			</dataSource>
+			<dialect>MYSQL_DIALECT</dialect>
+		</connectionSource>
+	</appender>
+
+	<include resource="org/springframework/boot/logging/logback/base.xml"/>
+	<logger name="org.springframework.web" level="DEBUG"/>
+
+	<springProfile name="dev | staging">
+		<root level="INFO">
+			<appender-ref ref="CONSOLE"/>
+		</root>
+	</springProfile>
+	<springProfile name="prod">
+		<root level="INFO">
+			<appender-ref ref="DB"/>
+		</root>
+	</springProfile>
+</configuration>

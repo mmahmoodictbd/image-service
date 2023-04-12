@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+#  image-service:
+#    build: .
+#    ports:
+#      - "8080:8080"
+#    restart: on-failure
+#    links:
+#      - localstack
+
+  # Mock AWS S3 services
+  localstack:
+    container_name: localstack_main
+    image: localstack/localstack
+    environment:
+      - DEBUG=1
+      - USE_SSL=0
+      - AWS_CBOR_DISABLE=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOSTNAME=localstack
+      - SERVICES=s3
+      - AWS_DEFAULT_REGION=us-west-1
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_HOST: mariadb
+    restart: unless-stopped
+    volumes:
+      - "mariadb_volume:/var/lib/mysql"
+      - "./src/main/resources/dblog/schema-mysql.sql:/docker-entrypoint-initdb.d/init.sql"
+
+  # http://localhost:3307/
+  # username / pass: root / root
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '3307:80'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: mariadb
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb_volume:

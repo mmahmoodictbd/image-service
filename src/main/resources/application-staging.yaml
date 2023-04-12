@@ -1,0 +1,10 @@
+### Staging profile
+
+spring:
+  config:
+    activate:
+      on-profile: staging
+
+logging:
+  level:
+    com.chumbok: DEBUG

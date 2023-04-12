@@ -1,0 +1,53 @@
+### Common
+
+spring:
+  application:
+    name: ImageService
+  profiles:
+    active: prod
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+logging:
+  level:
+    root: INFO
+
+app:
+  source-root-url: "https://fastly.picsum.photos/id/814/"
+  aws:
+    region: us-east-1
+    access-key: localstack
+    secret-key: localstack
+    s3-endpoint: http://127.0.0.1:4566
+    s3-root-bucket: image
+  logdb:
+    endpoint:
+    name:
+    username:
+    password:
+  image-types:
+    - name: original
+      height: -1
+      width: -1
+      quality: 100
+      scale-type: NONE
+      fill-color-hex-code: "#000000"
+      type: PNG
+    - name: thumbnail
+      height: 100
+      width: 100
+      quality: 50
+      scale-type: SKEW
+      fill-color-hex-code: "#000000"
+      type: PNG
+    - name: detail-large
+      height: 1000
+      width: 1000
+      quality: 100
+      scale-type: FILL
+      fill-color-hex-code: "#FFFFFF"
+      type: JPG
+
