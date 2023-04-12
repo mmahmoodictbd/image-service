@@ -10,9 +10,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class ImageServiceApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ImageServiceApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 }

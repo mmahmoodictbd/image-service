@@ -4,10 +4,6 @@ spring:
   config:
     activate:
       on-profile: prod
-  main:
-    allow-bean-definition-overriding: true
-  mvc:
-    log-request-details: true
 
 logging:
   level:

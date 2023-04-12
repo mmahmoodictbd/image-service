@@ -1,17 +1,21 @@
 version: "3.8"
 
 services:
-#  image-service:
-#    build: .
-#    ports:
-#      - "8080:8080"
-#    restart: on-failure
-#    links:
-#      - localstack
+  image-service:
+    build: .
+    image: mmahmoodictbd/image-service
+    environment:
+      - APP_AWS_S3_ENDPOINT=http://localstack:4566
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    links:
+      - localstack
+      - mariadb
 
   # Mock AWS S3 services
   localstack:
-    container_name: localstack_main
+    container_name: localstack
     image: localstack/localstack
     environment:
       - DEBUG=1

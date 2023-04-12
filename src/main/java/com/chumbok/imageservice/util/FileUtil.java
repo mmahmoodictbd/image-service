@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLConnection;
 
 @UtilityClass
@@ -20,10 +21,17 @@ public class FileUtil {
 	public static String guessContentTypeFromStream(byte[] imageBytes) {
 		var inputStream = new ByteArrayInputStream(imageBytes);
 		try {
-//			return "image/jpeg";
 			return URLConnection.guessContentTypeFromStream(inputStream);
 		} catch (IOException e) {
 			throw new IORuntimeException("Could not guess content type from image bytes.", e);
+		}
+	}
+
+	public static byte[] readAllBytes(InputStream inputStream) {
+		try {
+			return inputStream.readAllBytes();
+		} catch (IOException e) {
+			throw new IORuntimeException("Could not read inputStream.", e);
 		}
 	}
 }

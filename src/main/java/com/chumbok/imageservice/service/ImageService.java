@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import static com.chumbok.imageservice.util.FileUtil.DIR_SEPARATOR;
 import static com.chumbok.imageservice.util.FileUtil.getFileName;
 import static com.chumbok.imageservice.util.FileUtil.guessContentTypeFromStream;
+import static com.chumbok.imageservice.util.FileUtil.readAllBytes;
 import static com.chumbok.imageservice.util.ReferenceUtil.convertToS3FilePath;
 import static org.springframework.http.MediaType.parseMediaType;
 
@@ -33,13 +34,15 @@ public class ImageService {
 			return s3Service.getImage(s3ImagePath);
 		}
 
+		byte[] originalImageBytes;
 		var s3OriginalImagePath = buildS3ImagePath(ORIGINAL_IMAGE_TYPE, reference);
 		if (s3Service.isImageExist(s3OriginalImagePath)) {
-			return s3Service.getImage(s3OriginalImagePath);
+			originalImageBytes = readAllBytes(s3Service.getImage(s3OriginalImagePath).inputStream());
+		} else {
+			originalImageBytes = imageFetchService.fetchOriginalImage(reference)
+				.orElseThrow(() -> new NotFoundException("The requested source image does not exist."));
+			s3Service.saveImageAsync(s3OriginalImagePath, originalImageBytes);
 		}
-
-		var originalImageBytes = imageFetchService.fetchOriginalImage(reference);
-		s3Service.saveImageAsync(s3OriginalImagePath, originalImageBytes);
 
 		var optimizedImageBytes = imageProcessingService.process(originalImageBytes, imageType);
 		s3Service.saveImageAsync(s3ImagePath, optimizedImageBytes);

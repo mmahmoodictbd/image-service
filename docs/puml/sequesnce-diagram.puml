@@ -1,0 +1,44 @@
+@startuml
+
+hide footbox
+
+actor Browser
+participant "**Image Service**" as ImageService
+participant "**S3**." as S3
+collections "**Original Images**" as OriginalImageSource
+
+activate ImageService
+activate S3
+activate OriginalImageSource
+
+autonumber
+Browser -> ImageService : GET /image/show/detail-large/fake-seo\n?reference=/webp/gallery3/1.sm.png
+ImageService -> S3 : Search in S3
+S3 -> ImageService : Cached image NOT found
+ImageService -> OriginalImageSource
+OriginalImageSource -> ImageService : Fetched original image
+ImageService --> S3 :  Async Cache image in S3
+note right
+    Cached `original` image
+    Cached `detail-large` image
+end note
+ImageService -> Browser : Return image, HTTP 200
+
+newpage
+autonumber
+Browser -> ImageService : GET /image/show/detail-large/fake-seo\n?reference=/webp/gallery3/1.sm.png
+ImageService -> S3 : Search in S3
+S3 -> ImageService : Cached image found
+ImageService -> Browser : Return image, HTTP 200
+
+newpage
+autonumber
+Browser -> ImageService : DELETE /image/flush/detail-large\n?reference=/webp/gallery3/1.sm.png
+ImageService -> S3 : Remove image(s) from S3
+note right
+    imageType=`original`, remove all images
+    imageType!=`original`, remove image by imageType
+end note
+ImageService -> Browser : HTTP 204
+
+@enduml

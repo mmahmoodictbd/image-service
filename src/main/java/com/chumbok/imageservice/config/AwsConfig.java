@@ -24,6 +24,7 @@ public class AwsConfig {
 			.endpointOverride(URI.create(properties.s3Endpoint()))
 			.credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
 			.region(Region.of(properties.region()))
+			.forcePathStyle(true)
 			.build();
 	}
 }

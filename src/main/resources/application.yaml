@@ -16,13 +16,13 @@ logging:
     root: INFO
 
 app:
-  source-root-url: "https://fastly.picsum.photos/id/814/"
+  source-root-url: "https://www.gstatic.com/"
   aws:
     region: us-east-1
     access-key: localstack
     secret-key: localstack
     s3-endpoint: http://127.0.0.1:4566
-    s3-root-bucket: image
+    s3-root-bucket: images
   logdb:
     endpoint:
     name:

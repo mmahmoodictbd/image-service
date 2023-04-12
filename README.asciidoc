@@ -1,0 +1,96 @@
+# Image Service
+
+
+###### Motivation
+
+This project is an assignment. Implemented code would be a nice example of Image Service that cache image in S3.
+
+
+### Features
+
+Image Service APIs provides
+
+- Fetching image from cache in S3.
+- Fetch original image if cached image is not present.
+
+
+image::docs/images/sequence-diagram.png[sequence-diagram screenshot]
+
+
+### How to run
+
+
+###### Prerequisite
+- JDK 17.0.6 (Tested with Amazon Corretto JDK)
+- Maven 3.8.x+
+- Docker (20.10.14), Docker Compose (1.29.2)
+
+###### Run Cassandra in Docker
+```
+$ docker-compose up
+```
+
+###### Build
+```
+$ mvn clean compile install
+```
+
+###### Run
+```
+$ java -jar target/image-service-1.0.0.jar
+```
+or
+```
+$ mvn spring-boot:run
+```
+
+###### Quick test
+
+For testing purpose, `source-root-url` is set to `https://www.gstatic.com/`
+
+Open browser and hit -
+```
+http://localhost:8080/image/show/detail-large/fake-seo?reference=/webp/gallery3/1.sm.png
+```
+You should see the image -
+
+image::docs/images/sample-response.png[sample-response.png screenshot]
+
+Using `awslocal` CLI, you can verify cached S3 images
+```
+➜  ~ awslocal s3 ls --recursive s3://images/
+2023-04-12 18:10:45      48061 detail-large/_web/p_ga/_webp_gallery3_1.sm.png
+2023-04-12 18:10:06      48061 original/_web/p_ga/_webp_gallery3_1.sm.png
+```
+
+To flush the cache, use -
+```
+curl --location --request DELETE 'http://localhost:8080/image/flush/original?reference=/webp/gallery3/1.sm.png'
+```
+Using `awslocal` CLI, you can verify removal of cached S3 images
+```
+➜  ~ awslocal s3 ls --recursive s3://images/
+2023-04-12 14:16:16      48061 detail-large/_web/p_ga/_webp_gallery3_1.sm.png
+2023-04-12 14:16:16      48061 original/_web/p_ga/_webp_gallery3_1.sm.png
+➜  ~ curl --location --request DELETE 'http://localhost:8080/image/flush/original?reference=/webp/gallery3/1.sm.png'
+➜  ~ awslocal s3 ls --recursive s3://images/
+➜  ~
+```
+
+### Development
+##### How to run tests
+
+###### How to run unit tests
+To run the unit tests, execute the following commands
+```
+mvn clean test-compile test
+```
+
+### Improvements to make
+- Improve architectural design.
+- Generate and check OWASP report.
+- Improve code coverage, e.g. adding end-to-end tests.
+
+### Copyright & License
+
+Licensed under the MIT License, see the link:LICENSE[LICENSE] file for details.
