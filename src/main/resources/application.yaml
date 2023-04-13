@@ -23,11 +23,6 @@ app:
     secret-key: localstack
     s3-endpoint: http://127.0.0.1:4566
     s3-root-bucket: images
-  logdb:
-    endpoint:
-    name:
-    username:
-    password:
   image-types:
     - name: original
       height: -1

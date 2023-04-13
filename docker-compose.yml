@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   image-service:
-    build: .
+    container_name: image-service
     image: mmahmoodictbd/image-service
     environment:
       - APP_AWS_S3_ENDPOINT=http://localstack:4566
@@ -44,19 +44,6 @@ services:
     volumes:
       - "mariadb_volume:/var/lib/mysql"
       - "./src/main/resources/dblog/schema-mysql.sql:/docker-entrypoint-initdb.d/init.sql"
-
-  # http://localhost:3307/
-  # username / pass: root / root
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: phpmyadmin/phpmyadmin
-    ports:
-      - '3307:80'
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      PMA_HOST: mariadb
-    depends_on:
-      - mariadb
 
 volumes:
   mariadb_volume:

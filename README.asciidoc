@@ -25,14 +25,15 @@ image::docs/images/sequence-diagram.png[sequence-diagram screenshot]
 - Maven 3.8.x+
 - Docker (20.10.14), Docker Compose (1.29.2)
 
-###### Run Cassandra in Docker
+###### Run LocalStack and MariaDB (for Prod logging) in Docker
 ```
+$ docker build -t mmahmoodictbd/image-service .
 $ docker-compose up
 ```
 
 ###### Build
 ```
-$ mvn clean compile install
+$ mvn clean install
 ```
 
 ###### Run
@@ -55,7 +56,10 @@ URL format - `http://localhost:8080/image/show/<imageType>/<anything>?reference=
 Open browser and hit -
 ```
 http://localhost:8080/image/show/detail-large/fake-seo?reference=/webp/gallery3/1.sm.png
+http://localhost:8080/image/show/thumbnail/fake-seo?reference=/webp/gallery3/1.sm.png
+http://localhost:8080/image/original/thumbnail/fake-seo?reference=/webp/gallery3/1.sm.png
 ```
+
 You should see the image -
 
 image::docs/images/sample-response.png[sample-response.png screenshot]
@@ -81,6 +85,15 @@ Using `awslocal` CLI, you can verify removal of cached S3 images
 ➜  ~
 ```
 
+
+### Production
+##### How to view logs in DB
+Production logs (default active profile is `prod`) stored in MariaDB.
+Use `docker-compose-infra.yml` to run `phpmyadmin` service to view logs in the DB.
+
+image::docs/images/logdb.png[logdb.png screenshot]
+
+
 ### Development
 ##### How to run tests
 
@@ -91,7 +104,7 @@ mvn clean test-compile test
 ```
 
 ### Improvements to make
-- Improve architectural design.
+- Fix TODO in src/main/resources/logback-spring.xml
 - Generate and check OWASP report.
 - Improve code coverage, e.g. adding end-to-end tests.
 

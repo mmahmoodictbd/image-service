@@ -8,3 +8,10 @@ spring:
 logging:
   level:
     com.chumbok: ERROR
+
+app:
+  logdb:
+    endpoint: localhost:3306
+    name: logdb
+    username: root
+    password: root
