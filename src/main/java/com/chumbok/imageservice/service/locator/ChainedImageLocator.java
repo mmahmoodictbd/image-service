@@ -17,6 +17,5 @@ public class ChainedImageLocator implements ImageLocator {
 		return current.findImage(imageType, reference)
 			.map(Optional::of)
 			.orElseGet(() -> next.findImage(imageType, reference));
-
 	}
 }

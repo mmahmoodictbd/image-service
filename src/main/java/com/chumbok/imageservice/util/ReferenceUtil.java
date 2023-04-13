@@ -10,11 +10,11 @@ public class ReferenceUtil {
 	private static final char FORWARD_SLASH = '/';
 	private static final char UNDERSCORE = '_';
 
-	public static String buildS3ImagePath(String imageType, String reference) {
+	public static String buildS3ImagePath(final String imageType, final String reference) {
 		return imageType + DIR_SEPARATOR + convertToS3FilePath(reference);
 	}
 
-	public static String convertToS3FilePath(String reference) {
+	public static String convertToS3FilePath(final String reference) {
 		var filename = convertToUniqueFilename(stripFileExtension(reference));
 
 		var pathStringBuilder = new StringBuilder();
@@ -31,16 +31,16 @@ public class ReferenceUtil {
 		return pathStringBuilder.append(filename).append(".").append(getFileExtension(reference)).toString();
 	}
 
-	public static String convertToUniqueFilename(String reference) {
+	public static String convertToUniqueFilename(final String reference) {
 		return reference.replace(FORWARD_SLASH, UNDERSCORE);
 	}
 
-	private static String stripFileExtension(String reference) {
+	private static String stripFileExtension(final String reference) {
 		var indexOfFileExtension = reference.lastIndexOf('.');
 		return indexOfFileExtension > -1 ? reference.substring(0, indexOfFileExtension) : reference;
 	}
 
-	private static String getFileExtension(String reference) {
+	private static String getFileExtension(final String reference) {
 		var indexOfFileExtension = reference.lastIndexOf('.');
 		return indexOfFileExtension > -1 ? reference.substring(indexOfFileExtension + 1) : "";
 	}

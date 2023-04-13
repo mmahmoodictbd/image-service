@@ -2,7 +2,7 @@ package com.chumbok.imageservice.exception;
 
 public class IORuntimeException extends RuntimeException {
 
-	public IORuntimeException(String message, Throwable cause) {
+	public IORuntimeException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 }

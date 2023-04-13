@@ -1,8 +1,8 @@
 package com.chumbok.imageservice.exception.handler;
 
+import com.chumbok.imageservice.dto.ErrorResponse;
 import com.chumbok.imageservice.exception.IORuntimeException;
 import com.chumbok.imageservice.exception.NotFoundException;
-import com.chumbok.imageservice.exception.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -22,13 +22,13 @@ public class ApplicationExceptionHandler extends BaseExceptionHandler {
 
 	@ResponseStatus(NOT_FOUND)
 	@ExceptionHandler(NotFoundException.class)
-	public ErrorResponse handleNotFoundException(NotFoundException ex) {
+	public ErrorResponse handleNotFoundException(final NotFoundException ex) {
 		return new ErrorResponse("NOT_FOUND", "Could not found requested resource.");
 	}
 
 	@ResponseStatus(INTERNAL_SERVER_ERROR)
 	@ExceptionHandler({SdkException.class, IORuntimeException.class})
-	public ErrorResponse handleSdkException(RuntimeException ex) {
+	public ErrorResponse handleSdkException(final RuntimeException ex) {
 		return new ErrorResponse("INTERNAL_SERVER_ERROR", "Could not access/connect with the URL.");
 	}
 }

@@ -1,6 +1,5 @@
 package com.chumbok.imageservice.controller;
 
-
 import com.chumbok.imageservice.service.ImageService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +31,8 @@ public class ImageController {
 	@ResponseBody
 	@GetMapping({"/show/{imageType}/*"})
 	public ResponseEntity<InputStreamResource> getImage(
-		@NotBlank(message = "imageType can not be empty") @PathVariable("imageType") String imageType,
-		@NotBlank(message = "Request param reference can not be empty.") @Length(max = 1024) @RequestParam String reference) {
+		@NotBlank(message = "imageType can not be empty") @PathVariable("imageType") final String imageType,
+		@NotBlank(message = "Request param reference can not be empty.") @Length(max = 1024) @RequestParam final String reference) {
 
 		var imageResponse = imageService.getImage(imageType, reference);
 		var contentDisposition = ContentDisposition.inline().filename(imageResponse.fileName()).build();
@@ -46,8 +45,8 @@ public class ImageController {
 
 	@ResponseStatus(NO_CONTENT)
 	@DeleteMapping("/flush/{imageType}")
-	public void flush(@NotBlank(message = "imageType can not be empty") @PathVariable("imageType") String imageType,
-					  @NotBlank(message = "Request param reference can not be empty.") @Length(max = 1024)  @RequestParam String reference) {
+	public void flush(@NotBlank(message = "imageType can not be empty") @PathVariable("imageType") final String imageType,
+					  @NotBlank(message = "Request param reference can not be empty.") @Length(max = 1024)  @RequestParam final String reference) {
 		imageService.flush(imageType, reference);
 	}
 }

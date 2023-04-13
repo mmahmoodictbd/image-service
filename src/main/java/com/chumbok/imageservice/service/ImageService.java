@@ -25,14 +25,14 @@ public class ImageService {
 
 	private final ImageTypesConfigProperties imageTypesProperties;
 
-	public ImageResponse getImage(String imageTypeString, String reference) {
+	public ImageResponse getImage(final String imageTypeString, final String reference) {
 		var imageType = findPredefinedImageType(imageTypeString)
 			.orElseThrow(() -> new NotFoundException(IMAGE_TYPE_DOES_NOT_EXIST_MESSAGE));
 		return cacheableImageLocator.findImage(imageType, reference)
 			.orElseThrow(() -> new NotFoundException(IMAGE_DOES_NOT_FOUND_MESSAGE));
 	}
 
-	public void flush(String imageTypeString, String reference) {
+	public void flush(final String imageTypeString, final String reference) {
 		var imageType = findPredefinedImageType(imageTypeString)
 			.orElseThrow(() -> new NotFoundException(IMAGE_TYPE_DOES_NOT_EXIST_MESSAGE));
 		if (ORIGINAL_IMAGE_TYPE.equals(imageType.name())) {
@@ -44,7 +44,7 @@ public class ImageService {
 		}
 	}
 
-	private Optional<ImageType> findPredefinedImageType(String imageTypeString) {
+	private Optional<ImageType> findPredefinedImageType(final String imageTypeString) {
 		return imageTypesProperties.imageTypes()
 			.stream()
 			.filter(predefinedImageType -> predefinedImageType.name().equalsIgnoreCase(imageTypeString))

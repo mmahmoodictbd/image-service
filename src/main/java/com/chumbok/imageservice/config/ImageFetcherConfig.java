@@ -18,7 +18,7 @@ public class ImageFetcherConfig {
 	private static final int FIXED_BACKOFF_INTERVAL_MILLIS = 1000;
 
 	@Bean
-	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+	public RestTemplate restTemplate(final RestTemplateBuilder restTemplateBuilder) {
 		return restTemplateBuilder
 			.setConnectTimeout(Duration.ofMillis(CONNECTION_TIMEOUT_MILLIS))
 			.setReadTimeout(Duration.ofMillis(READ_TIMEOUT_MILLIS))

@@ -23,23 +23,23 @@ public class ImageProcessingService {
 
 	private static final String DEFAULT_IMAGE_FORMAT = "png";
 
-	public byte[] process(byte[] imageBytes) {
+	public byte[] process(final byte[] imageBytes) {
 		BufferedImage bufferedImage = toBufferedImage(imageBytes);
 		byte[] resized = resize(bufferedImage, bufferedImage.getWidth(), bufferedImage.getHeight(), DEFAULT_IMAGE_FORMAT);
 		return optimize(toBufferedImage(resized), DEFAULT_IMAGE_FORMAT, 1f);
 	}
 
-	public byte[] process(byte[] imageBytes, ImageType type) {
+	public byte[] process(final byte[] imageBytes, final ImageType type) {
 		var format = type.type().name().toLowerCase();
 		byte[] resized = resize(toBufferedImage(imageBytes), type.width(), type.height(), format);
 		return optimize(toBufferedImage(resized), format, (float) type.quality() / 100);
 	}
 
-	private byte[] resize(BufferedImage bufferedImage, int width, int height, String format) {
+	private byte[] resize(final BufferedImage bufferedImage, final int width, final int height, final String format) {
 		return toByteArray(Scalr.resize(bufferedImage, Scalr.Method.AUTOMATIC, AUTOMATIC, width, height, OP_ANTIALIAS), format);
 	}
 
-	private byte[] optimize(BufferedImage bufferedImage, String format, float quality) {
+	private byte[] optimize(final BufferedImage bufferedImage, final String format, final float quality) {
 		var imageWriterIterator = ImageIO.getImageWritersByFormatName(format);
 		var imageWriter = imageWriterIterator.next();
 		var param = imageWriter.getDefaultWriteParam();
@@ -56,7 +56,7 @@ public class ImageProcessingService {
 		}
 	}
 
-	private byte[] toByteArray(BufferedImage bufferedImage, String format) {
+	private byte[] toByteArray(final BufferedImage bufferedImage, final String format) {
 		try (var byteArrayOutputStream = new ByteArrayOutputStream()) {
 			var formatConvertedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), TYPE_INT_RGB);
 			formatConvertedImage.createGraphics().drawImage(bufferedImage, 0, 0, WHITE, null);
@@ -67,7 +67,7 @@ public class ImageProcessingService {
 		}
 	}
 
-	private BufferedImage toBufferedImage(byte[] bytes) {
+	private BufferedImage toBufferedImage(final byte[] bytes) {
 		try (var inputStream = new ByteArrayInputStream(bytes)) {
 			return ImageIO.read(inputStream);
 		} catch (IOException e) {

@@ -33,7 +33,7 @@ public class S3Service {
 
 	@Value("${app.aws.s3-root-bucket}") private String bucketName;
 
-	public ImageResponse getImage(String imagePath) {
+	public ImageResponse getImage(final String imagePath) {
 		var responseInputStream = s3Client.getObject(buildGetObjectRequest(imagePath));
 		return new ImageResponse(
 			getFileName(imagePath),
@@ -44,7 +44,7 @@ public class S3Service {
 	}
 
 	@Async
-	public void saveImageAsync(String imagePath, byte[] imageBytes) {
+	public void saveImageAsync(final String imagePath, final byte[] imageBytes) {
 		try {
 			retryTemplate.execute((RetryCallback<Void, SdkException>) context -> {
 				saveImage(imagePath, imageBytes);
@@ -56,7 +56,7 @@ public class S3Service {
 
 	}
 
-	private void saveImage(String imagePath, byte[] imageBytes) {
+	private void saveImage(final String imagePath, final byte[] imageBytes) {
 		try {
 			s3Client.putObject(buildPutRequest(imagePath, guessContentType(imageBytes)), RequestBody.fromBytes(imageBytes));
 		} catch (SdkException exception) {
@@ -64,11 +64,11 @@ public class S3Service {
 		}
 	}
 
-	public void deleteImage(String imagePath) {
+	public void deleteImage(final String imagePath) {
 		s3Client.deleteObject(getDeleteObjectRequest(imagePath));
 	}
 
-	public boolean isImageExist(String imagePath) {
+	public boolean isImageExist(final String imagePath) {
 		try {
 			s3Client.headObject(buildHeadObjectRequest(imagePath));
 		} catch (NoSuchKeyException noSuchKeyException) {
@@ -77,19 +77,19 @@ public class S3Service {
 		return true;
 	}
 
-	private HeadObjectRequest buildHeadObjectRequest(String imagePath) {
+	private HeadObjectRequest buildHeadObjectRequest(final String imagePath) {
 		return HeadObjectRequest.builder().bucket(bucketName).key(imagePath).build();
 	}
 
-	private GetObjectRequest buildGetObjectRequest(String originalImagePath) {
+	private GetObjectRequest buildGetObjectRequest(final String originalImagePath) {
 		return GetObjectRequest.builder().bucket(bucketName).key(originalImagePath).build();
 	}
 
-	private DeleteObjectRequest getDeleteObjectRequest(String imagePath) {
+	private DeleteObjectRequest getDeleteObjectRequest(final String imagePath) {
 		return DeleteObjectRequest.builder().bucket(bucketName).key(imagePath).build();
 	}
 
-	private PutObjectRequest buildPutRequest(String imagePath, String contentType) {
+	private PutObjectRequest buildPutRequest(final String imagePath, final String contentType) {
 		return PutObjectRequest.builder().bucket(bucketName).key(imagePath).contentType(contentType).acl(PUBLIC_READ).build();
 	}
 }

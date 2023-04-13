@@ -11,7 +11,6 @@ import static com.chumbok.imageservice.util.ReferenceUtil.buildS3ImagePath;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
-
 @RequiredArgsConstructor
 public class S3ImageLocator implements ImageLocator {
 

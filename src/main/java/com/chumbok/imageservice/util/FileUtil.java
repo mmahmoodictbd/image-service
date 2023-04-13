@@ -13,12 +13,12 @@ public class FileUtil {
 
 	public static final String DIR_SEPARATOR = "/";
 
-	public static String getFileName(String imagePath) {
+	public static String getFileName(final String imagePath) {
 		var lastIndex = imagePath.lastIndexOf(DIR_SEPARATOR);
 		return lastIndex > -1 ? imagePath.substring(lastIndex + 1) : imagePath;
 	}
 
-	public static String guessContentType(byte[] imageBytes) {
+	public static String guessContentType(final byte[] imageBytes) {
 		var inputStream = new ByteArrayInputStream(imageBytes);
 		try {
 			return URLConnection.guessContentTypeFromStream(inputStream);
@@ -27,7 +27,7 @@ public class FileUtil {
 		}
 	}
 
-	public static byte[] readAllBytes(InputStream inputStream) {
+	public static byte[] readAllBytes(final InputStream inputStream) {
 		try {
 			return inputStream.readAllBytes();
 		} catch (IOException e) {
