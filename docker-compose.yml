@@ -31,6 +31,7 @@ services:
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+
   # Storing log for Prod env
   mariadb:
     container_name: mariadb
@@ -44,6 +45,20 @@ services:
     volumes:
       - "mariadb_volume:/var/lib/mysql"
       - "./src/main/resources/dblog/schema-mysql.sql:/docker-entrypoint-initdb.d/init.sql"
+
+  # If you want to see the logs in DB
+  # http://localhost:3307/
+  # username / pass: root / root
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '3307:80'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: mariadb
+    depends_on:
+      - mariadb
 
 volumes:
   mariadb_volume:

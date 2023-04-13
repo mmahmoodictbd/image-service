@@ -25,23 +25,22 @@ image::docs/images/sequence-diagram.png[sequence-diagram screenshot]
 - Maven 3.8.x+
 - Docker (20.10.14), Docker Compose (1.29.2)
 
-###### Run LocalStack and MariaDB (for Prod logging) in Docker
+###### Run ImageService, LocalStack and MariaDB (for Prod logging) in Docker
 ```
 $ docker build -t mmahmoodictbd/image-service .
 $ docker-compose up
 ```
 
-###### Build
+###### Build and Run
 ```
+$ dockdocker-compose -f docker-compose-infra.yml up
 $ mvn clean install
-```
-
-###### Run
-```
 $ java -jar target/image-service-1.0.0.jar
 ```
+
 or
 ```
+$ dockdocker-compose -f docker-compose-infra.yml up
 $ mvn spring-boot:run
 ```
 
@@ -89,7 +88,7 @@ Using `awslocal` CLI, you can verify removal of cached S3 images
 ### Production
 ##### How to view logs in DB
 Production logs (default active profile is `prod`) stored in MariaDB.
-Use `docker-compose-infra.yml` to run `phpmyadmin` service to view logs in the DB.
+If you are running `docker-compose-infra.yml`, access `phpmyadmin` (http://localhost:3307, username/pass: root/ root) to view logs in the DB.
 
 image::docs/images/logdb.png[logdb.png screenshot]
 
