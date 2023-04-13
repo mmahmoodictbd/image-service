@@ -12,3 +12,6 @@ spring:
 logging:
   level:
     com.chumbok: ERROR
+
+app:
+  source-root-url: "http://localhost/"
