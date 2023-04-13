@@ -18,7 +18,7 @@ public class FileUtil {
 		return lastIndex > -1 ? imagePath.substring(lastIndex + 1) : imagePath;
 	}
 
-	public static String guessContentTypeFromStream(byte[] imageBytes) {
+	public static String guessContentType(byte[] imageBytes) {
 		var inputStream = new ByteArrayInputStream(imageBytes);
 		try {
 			return URLConnection.guessContentTypeFromStream(inputStream);

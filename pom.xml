@@ -22,6 +22,9 @@
 		<aws.sdk.version>2.20.42</aws.sdk.version>
 		<spring-retry.version>2.0.1</spring-retry.version>
 		<logback-classic-db.version>1.2.11.1</logback-classic-db.version>
+		<mysql-connector-java.version>8.0.32</mysql-connector-java.version>
+		<c3p0.version>0.9.5.5</c3p0.version>
+		<imgscalr-lib.version>4.2</imgscalr-lib.version>
 	</properties>
 
 	<dependencies>
@@ -37,6 +40,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.imgscalr</groupId>
+			<artifactId>imgscalr-lib</artifactId>
+			<version>${imgscalr-lib.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.retry</groupId>
 			<artifactId>spring-retry</artifactId>
 			<version>${spring-retry.version}</version>
@@ -45,12 +54,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.qos.logback.db</groupId>
-			<artifactId>logback-classic-db</artifactId>
-			<version>${logback-classic-db.version}</version>
 		</dependency>
 
 		<dependency>
@@ -63,16 +66,22 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback.db</groupId>
+			<artifactId>logback-classic-db</artifactId>
+			<version>${logback-classic-db.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.32</version>
+			<version>${mysql-connector-java.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
-			<version>0.9.5.5</version>
+			<version>${c3p0.version}</version>
 		</dependency>
 
 		<dependency>

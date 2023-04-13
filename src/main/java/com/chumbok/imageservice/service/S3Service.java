@@ -9,6 +9,7 @@ import org.springframework.retry.RetryCallback;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
@@ -18,7 +19,7 @@ import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import static com.chumbok.imageservice.util.FileUtil.getFileName;
-import static com.chumbok.imageservice.util.FileUtil.guessContentTypeFromStream;
+import static com.chumbok.imageservice.util.FileUtil.guessContentType;
 import static org.springframework.http.MediaType.parseMediaType;
 import static software.amazon.awssdk.services.s3.model.ObjectCannedACL.PUBLIC_READ;
 
@@ -45,20 +46,20 @@ public class S3Service {
 	@Async
 	public void saveImageAsync(String imagePath, byte[] imageBytes) {
 		try {
-			retryTemplate.execute((RetryCallback<Void, Throwable>) context -> {
+			retryTemplate.execute((RetryCallback<Void, SdkException>) context -> {
 				saveImage(imagePath, imageBytes);
 				return null;
 			});
-		} catch (Throwable throwable) {
-			log.error("Could not write the image to the S3 after retry.", throwable);
+		} catch (SdkException exception) {
+			log.error("Could not write the image to the S3 after retry.", exception);
 		}
 
 	}
 
 	private void saveImage(String imagePath, byte[] imageBytes) {
 		try {
-			s3Client.putObject(buildPutRequest(imagePath, guessContentTypeFromStream(imageBytes)), RequestBody.fromBytes(imageBytes));
-		} catch (Exception exception) {
+			s3Client.putObject(buildPutRequest(imagePath, guessContentType(imageBytes)), RequestBody.fromBytes(imageBytes));
+		} catch (SdkException exception) {
 			log.warn("Could not write the image to the S3.", exception);
 		}
 	}

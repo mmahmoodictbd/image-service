@@ -1,17 +1,6 @@
 version: "3.8"
 
 services:
-  image-service:
-    build: .
-    image: mmahmoodictbd/image-service
-    environment:
-      - APP_AWS_S3_ENDPOINT=http://localstack:4566
-    ports:
-      - "8080:8080"
-    restart: on-failure
-    links:
-      - localstack
-      - mariadb
 
   # Mock AWS S3 services
   localstack:
@@ -31,6 +20,7 @@ services:
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+
   # Storing log for Prod env
   mariadb:
     container_name: mariadb
@@ -44,19 +34,6 @@ services:
     volumes:
       - "mariadb_volume:/var/lib/mysql"
       - "./src/main/resources/dblog/schema-mysql.sql:/docker-entrypoint-initdb.d/init.sql"
-
-  # http://localhost:3307/
-  # username / pass: root / root
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: phpmyadmin/phpmyadmin
-    ports:
-      - '3307:80'
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      PMA_HOST: mariadb
-    depends_on:
-      - mariadb
 
 volumes:
   mariadb_volume:

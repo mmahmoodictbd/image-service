@@ -13,7 +13,7 @@ Image Service APIs provides
 - Fetching image from cache in S3.
 - Fetch original image if cached image is not present.
 
-
+image::docs/images/functional-diagram.png[functional-diagram.png screenshot]
 image::docs/images/sequence-diagram.png[sequence-diagram screenshot]
 
 
@@ -46,7 +46,11 @@ $ mvn spring-boot:run
 
 ###### Quick test
 
-For testing purpose, `source-root-url` is set to `https://www.gstatic.com/`
+For testing purpose, `source-root-url` is set to `https://www.gstatic.com/`.
+
+Available image types are - `original`, `thumbnail` and `detail-large`.
+
+URL format - `http://localhost:8080/image/show/<imageType>/<anything>?reference=<sourceReference>`.
 
 Open browser and hit -
 ```

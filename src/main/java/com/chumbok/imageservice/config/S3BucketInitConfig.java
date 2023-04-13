@@ -22,11 +22,17 @@ public class S3BucketInitConfig {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void createBucketIfNotExist() {
-		var headBucketRequest = HeadBucketRequest.builder().bucket(bucketName).build();
+		var headBucketRequest = HeadBucketRequest.builder()
+			.bucket(bucketName)
+			.build();
 		try {
 			s3Client.headBucket(headBucketRequest);
 		} catch (NoSuchBucketException e) {
-			s3Client.createBucket(CreateBucketRequest.builder().bucket(bucketName).acl(PUBLIC_READ).build());
+			s3Client.createBucket(CreateBucketRequest.builder()
+				.bucket(bucketName)
+				.acl(PUBLIC_READ)
+				.build()
+			);
 		}
 	}
 }

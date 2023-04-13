@@ -1,6 +1,5 @@
 package com.chumbok.imageservice.config;
 
-
 import com.chumbok.imageservice.dto.ImageType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

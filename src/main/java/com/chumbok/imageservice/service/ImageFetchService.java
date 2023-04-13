@@ -1,6 +1,5 @@
 package com.chumbok.imageservice.service;
 
-import com.chumbok.imageservice.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +23,7 @@ public class ImageFetchService {
 
 	@Value("${app.source-root-url}") private String sourceRootUrl;
 
-	public Optional<byte[]> fetchOriginalImage(String reference) {
+	public Optional<byte[]> fetchOriginalImage(final String reference) {
 		try {
 			return Optional.of(retryTemplate.execute((RetryCallback<byte[], Throwable>) context -> fetchImage(buildUrl(reference))));
 		} catch (Throwable e) {
