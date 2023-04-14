@@ -98,7 +98,7 @@ class S3ServiceTest {
 	}
 
 	@SneakyThrows
-	private static InputStream getTestImageInputStream() {
+	private InputStream getTestImageInputStream() {
 		return new ClassPathResource(TEST_IMAGE_PATH).getInputStream();
 	}
 }
