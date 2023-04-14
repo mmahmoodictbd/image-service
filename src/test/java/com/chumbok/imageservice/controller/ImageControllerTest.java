@@ -14,14 +14,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 import static com.chumbok.imageservice.util.FileUtil.readAllBytes;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -31,6 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @ActiveProfiles("it")
 @TestInstance(PER_CLASS)
@@ -46,15 +49,17 @@ class ImageControllerTest {
 
 	@BeforeAll
 	void setup() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+		mockMvc = webAppContextSetup(context).build();
 	}
 
 	@Test
 	void testShowImageEndpointFetchRemoteSourceImage() throws Exception {
+		when(mockS3Client.headObject(any(HeadObjectRequest.class))).thenThrow(NoSuchKeyException.builder().build());
 		when(mockRestTemplate.getForEntity("http://localhost/webp/gallery/beautiful-test-image.png", byte[].class)).
 			thenReturn(new ResponseEntity(fetchedImageBytes(), OK));
 
-		mockMvc.perform(get("/image/show/detail-large/seo-friendly-url").queryParam("reference", "webp/gallery/beautiful-test-image.png"))
+		mockMvc.perform(get("/image/show/detail-large/seo-friendly-url")
+				.queryParam("reference", "webp/gallery/beautiful-test-image.png"))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("image/jpeg"))
 			.andExpect(header().string(CONTENT_DISPOSITION, "inline; filename=\"webp_gallery_beautiful-test-image.png\""));
@@ -62,7 +67,8 @@ class ImageControllerTest {
 
 	@Test
 	void testVerifyFlushImageEndpointCallS3Client() throws Exception {
-		mockMvc.perform(delete("/image/flush/detail-large").queryParam("reference", "webp/gallery/beautiful-test-image.png"))
+		mockMvc.perform(delete("/image/flush/detail-large")
+				.queryParam("reference", "webp/gallery/beautiful-test-image.png"))
 			.andExpect(status().isNoContent());
 
 		verify(mockS3Client)
@@ -71,7 +77,8 @@ class ImageControllerTest {
 
 	@Test
 	void testVerifyFlushOriginalImageEndpointCallS3Client() throws Exception {
-		mockMvc.perform(delete("/image/flush/original").queryParam("reference", "webp/gallery/beautiful-test-image.png"))
+		mockMvc.perform(delete("/image/flush/original")
+				.queryParam("reference", "webp/gallery/beautiful-test-image.png"))
 			.andExpect(status().isNoContent());
 
 		verify(mockS3Client)
