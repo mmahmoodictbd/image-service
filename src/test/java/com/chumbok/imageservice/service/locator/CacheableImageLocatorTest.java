@@ -26,6 +26,7 @@ import static com.chumbok.imageservice.dto.FileExtension.PNG;
 import static com.chumbok.imageservice.dto.ScaleType.SKEW;
 import static com.chumbok.imageservice.util.FileUtil.readAllBytes;
 import static java.io.InputStream.nullInputStream;
+import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -91,6 +92,34 @@ class CacheableImageLocatorTest {
 		when(mockS3Service.getImage(S3_IMAGE_PATH_ORIGINAL)).thenReturn(imageResponse);
 		when(mockImageProcessingService.process(any(byte[].class), eq(THUMBNAIL_IMAGE_TYPE))).thenReturn(testImageBytes);
 
+
+		imageLocator.findImage(THUMBNAIL_IMAGE_TYPE, REFERENCE);
+
+		var imageBytesCaptor = ArgumentCaptor.forClass(byte[].class);
+		verify(mockS3Service, timeout(5000)).saveImageAsync(eq(S3_IMAGE_PATH_THUMBNAIL), imageBytesCaptor.capture());
+		assertArrayEquals(testImageBytes, imageBytesCaptor.getValue());
+	}
+
+	@Test
+	void testFindImageNoS3CacheFetchRemoteSourceImage() {
+		var testImageBytes = getTestImageBytes();
+		var expectedImageResponse = new ImageResponse(IMAGE_FILE_NAME, IMAGE_PNG, new ByteArrayInputStream(testImageBytes), LENGTH_TEST_IMAGE);
+		when(mockImageFetchService.fetchOriginalImage(REFERENCE)).thenReturn(of(testImageBytes));
+		when(mockImageProcessingService.process(any(byte[].class), eq(THUMBNAIL_IMAGE_TYPE))).thenReturn(testImageBytes);
+
+		var imageResponse = imageLocator.findImage(THUMBNAIL_IMAGE_TYPE, REFERENCE);
+
+		assertEquals(expectedImageResponse.fileName(), imageResponse.get().fileName());
+		assertEquals(expectedImageResponse.contentType(), imageResponse.get().contentType());
+		assertArrayEquals(testImageBytes, readAllBytes(imageResponse.get().inputStream()));
+		assertEquals(expectedImageResponse.contentLength(), imageResponse.get().contentLength());
+	}
+
+	@Test
+	void testFindImageCacheFetchRemoteSourceImage() {
+		var testImageBytes = getTestImageBytes();
+		when(mockImageFetchService.fetchOriginalImage(REFERENCE)).thenReturn(of(testImageBytes));
+		when(mockImageProcessingService.process(any(byte[].class), eq(THUMBNAIL_IMAGE_TYPE))).thenReturn(testImageBytes);
 
 		imageLocator.findImage(THUMBNAIL_IMAGE_TYPE, REFERENCE);
 
