@@ -11,9 +11,11 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Optional;
 
 import static java.awt.Color.WHITE;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+import static java.util.Optional.ofNullable;
 import static javax.imageio.ImageWriteParam.MODE_EXPLICIT;
 import static org.imgscalr.Scalr.Mode.AUTOMATIC;
 import static org.imgscalr.Scalr.OP_ANTIALIAS;
@@ -24,15 +26,16 @@ public class ImageProcessingService {
 	private static final String DEFAULT_IMAGE_FORMAT = "png";
 
 	public byte[] process(final byte[] imageBytes) {
-		BufferedImage bufferedImage = toBufferedImage(imageBytes);
-		byte[] resized = resize(bufferedImage, bufferedImage.getWidth(), bufferedImage.getHeight(), DEFAULT_IMAGE_FORMAT);
-		return optimize(toBufferedImage(resized), DEFAULT_IMAGE_FORMAT, 1f);
+		var bufferedImage = findBufferedImage(imageBytes).orElseThrow(() -> new IORuntimeException("Invalid image bytes"));
+		var resizedBytes = resize(bufferedImage, bufferedImage.getWidth(), bufferedImage.getHeight(), DEFAULT_IMAGE_FORMAT);
+		return optimize(findBufferedImage(resizedBytes).get(), DEFAULT_IMAGE_FORMAT, 1f);
 	}
 
 	public byte[] process(final byte[] imageBytes, final ImageType type) {
+		var bufferedImage = findBufferedImage(imageBytes).orElseThrow(() -> new IORuntimeException("Invalid image bytes"));
 		var format = type.type().name().toLowerCase();
-		byte[] resized = resize(toBufferedImage(imageBytes), type.width(), type.height(), format);
-		return optimize(toBufferedImage(resized), format, (float) type.quality() / 100);
+		var resizedBytes = resize(bufferedImage, type.width(), type.height(), format);
+		return optimize(findBufferedImage(resizedBytes).get(), format, (float) type.quality() / 100);
 	}
 
 	private byte[] resize(final BufferedImage bufferedImage, final int width, final int height, final String format) {
@@ -67,9 +70,9 @@ public class ImageProcessingService {
 		}
 	}
 
-	private BufferedImage toBufferedImage(final byte[] bytes) {
+	private Optional<BufferedImage> findBufferedImage(final byte[] bytes) {
 		try (var inputStream = new ByteArrayInputStream(bytes)) {
-			return ImageIO.read(inputStream);
+			return ofNullable(ImageIO.read(inputStream));
 		} catch (IOException e) {
 			throw new IORuntimeException("Could not read image bytes", e);
 		}
