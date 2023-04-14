@@ -14,7 +14,7 @@ class ImageProcessingServiceTest {
 	private static final ImageType DETAIL_LARGE_IMAGE_TYPE
 		= new ImageType("detail-large", 1000, 1000, 100, FILL, "#FFFFFF", JPG);
 
-	private ImageProcessingService imageProcessingService = new ImageProcessingService();
+	private final ImageProcessingService imageProcessingService = new ImageProcessingService();
 
 	@Test
 	void testProcessOnInvalidImageBytesThrowsIORuntimeException() {
