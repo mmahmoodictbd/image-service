@@ -2,7 +2,6 @@ package com.chumbok.imageservice.service;
 
 import com.chumbok.imageservice.Application;
 import com.chumbok.imageservice.TestConfig;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,11 +38,6 @@ class ImageFetchServiceTest {
 
 	@Autowired private ImageFetchService imageFetchService;
 	@MockBean private RestTemplate mockRestTemplate;
-
-	@BeforeAll
-	void setup() {
-
-	}
 
 	@Test
 	void testFetchOriginalImage() {

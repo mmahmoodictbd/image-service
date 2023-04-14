@@ -56,14 +56,6 @@ public class S3Service {
 
 	}
 
-	private void saveImage(final String imagePath, final byte[] imageBytes) {
-		try {
-			s3Client.putObject(buildPutRequest(imagePath, guessContentType(imageBytes)), RequestBody.fromBytes(imageBytes));
-		} catch (SdkException exception) {
-			log.warn("Could not write the image to the S3.", exception);
-		}
-	}
-
 	public void deleteImage(final String imagePath) {
 		s3Client.deleteObject(getDeleteObjectRequest(imagePath));
 	}
@@ -75,6 +67,14 @@ public class S3Service {
 			return false;
 		}
 		return true;
+	}
+
+	private void saveImage(final String imagePath, final byte[] imageBytes) {
+		try {
+			s3Client.putObject(buildPutRequest(imagePath, guessContentType(imageBytes)), RequestBody.fromBytes(imageBytes));
+		} catch (SdkException exception) {
+			log.warn("Could not write the image to the S3.", exception);
+		}
 	}
 
 	private HeadObjectRequest buildHeadObjectRequest(final String imagePath) {
