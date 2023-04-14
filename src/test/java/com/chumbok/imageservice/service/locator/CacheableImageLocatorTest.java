@@ -88,7 +88,7 @@ class CacheableImageLocatorTest {
 	void testFindImageCacheProcessedOriginalImage() {
 		var testImageBytes = getTestImageBytes();
 		var imageResponse = new ImageResponse(IMAGE_FILE_NAME, IMAGE_PNG, nullInputStream(), 0);
-		when(mockS3Service.isImageExist(eq(S3_IMAGE_PATH_ORIGINAL))).thenReturn(true);
+		when(mockS3Service.isImageExist(S3_IMAGE_PATH_ORIGINAL)).thenReturn(true);
 		when(mockS3Service.getImage(S3_IMAGE_PATH_ORIGINAL)).thenReturn(imageResponse);
 		when(mockImageProcessingService.process(any(byte[].class), eq(THUMBNAIL_IMAGE_TYPE))).thenReturn(testImageBytes);
 
