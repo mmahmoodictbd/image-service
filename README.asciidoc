@@ -33,14 +33,14 @@ $ docker-compose up
 
 ###### Build and Run
 ```
-$ dockdocker-compose -f docker-compose-infra.yml up
+$ docker-compose -f docker-compose-infra.yml up
 $ mvn clean install
 $ java -jar target/image-service-1.0.0.jar
 ```
 
 or
 ```
-$ dockdocker-compose -f docker-compose-infra.yml up
+$ docker-compose -f docker-compose-infra.yml up
 $ mvn spring-boot:run
 ```
 
